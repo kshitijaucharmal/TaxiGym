@@ -23,7 +23,7 @@ def saveFile():
 			for j in range(len(Q[i])):
 				f.write(str(Q[i, j]) + "\n")
 
-env = gym.make("FrozenLake-v0")
+env = gym.make("Taxi-v3")
 # parameters
 alpha = 0.6
 gamma = 0.9
@@ -43,7 +43,7 @@ if(train):
                 action = env.action_space.sample()
             else:
                 action = np.argmax(Q[state])
-            
+
             nextState, reward, done, _ = env.step(action)
             Q[state, action] += alpha * (reward + gamma * max(Q[nextState]) - Q[state, action])
             state = nextState
@@ -54,11 +54,13 @@ else:
     loadFile()
     for i in range(10):
         done = False
+        rew = 0.0
         state = env.reset()
         while not done:
             action = np.argmax(Q[state])
             nextState, reward, done, _ = env.step(action)
+            rew += reward
+            print(f"Reward {reward}")
             state = nextState
         print(f"Training Episode {i}")
-
 env.close()
