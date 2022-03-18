@@ -29,7 +29,9 @@ alpha = 0.6
 gamma = 0.9
 epsilon = 0.6
 max_episodes = 10000
-train = False
+
+train = True
+
 Q = np.zeros([env.observation_space.n, env.action_space.n])
 
 action = 0
@@ -38,6 +40,7 @@ if(train):
     for episode in range(max_episodes):
         done = False
         state = env.reset()
+        rewards = 0
         while not done:
             if np.random.random() < epsilon:
                 action = env.action_space.sample()
@@ -47,11 +50,11 @@ if(train):
             nextState, reward, done, _ = env.step(action)
             Q[state, action] += alpha * (reward + gamma * max(Q[nextState]) - Q[state, action])
             state = nextState
-        print(f"Episode {episode}")
+            rewards += reward
+        print(f"Episode {episode} with reward {rewards}")
     saveFile()
 
 else:
-    loadFile()
     for i in range(10):
         done = False
         rew = 0.0
